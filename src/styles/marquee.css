@@ -1,0 +1,58 @@
+/* Kinetic type bands */
+.mq {
+  position: relative;
+  padding-block: var(--section) 0;
+  overflow: hidden;
+}
+.mq__band {
+  overflow: hidden;
+  padding-block: 0.15em;
+  border-block: 1px solid var(--line-strong);
+}
+.mq__band + .mq__band {
+  border-top: 0;
+  background: var(--night);
+  color: var(--on-night);
+}
+.mq__track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+.mq__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding-right: 0.45em;
+  font-size: clamp(2.4rem, 7vw, 6.2rem);
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+.mq__band:first-child .mq__item:nth-child(odd) {
+  color: transparent;
+  -webkit-text-stroke: 1.2px var(--ink);
+}
+.mq__band + .mq__band .mq__item:nth-child(even) {
+  color: var(--accent);
+}
+.mq__node {
+  width: 0.42em;
+  height: 0.42em;
+  flex: none;
+}
+.mq__node circle:first-child {
+  fill: var(--accent);
+}
+.mq__node circle:last-child {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  opacity: 0.4;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mq__track {
+    transform: none !important;
+  }
+}

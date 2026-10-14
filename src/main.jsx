@@ -8,6 +8,7 @@ import './styles/features.css'
 import './styles/services.css'
 import './styles/canvas.css'
 import './styles/trending.css'
+import './styles/marquee.css'
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>

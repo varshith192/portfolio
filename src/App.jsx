@@ -39,10 +39,10 @@ export default function App() {
           <div className="paper">
             <About />
             <Projects />
-            <Services />
             <Experience />
             <Skills />
             <Education />
+            <Services />
           </div>
         </div>
         <Contact />

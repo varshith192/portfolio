@@ -9,7 +9,7 @@ export default function Services() {
   return (
     <section className="section svc" id="services" aria-labelledby="svc-title">
       <div className="wrap">
-        <SectionHead n="03" label="Freelance services" id="svc-title">
+        <SectionHead n="06" label="Freelance services" id="svc-title">
           Need it built? I take on <em>freelance</em> projects.
         </SectionHead>
 

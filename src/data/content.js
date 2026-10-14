@@ -23,10 +23,10 @@ export const profile = {
 export const nav = [
   { id: 'about', n: '01', label: 'About' },
   { id: 'work', n: '02', label: 'Work' },
-  { id: 'services', n: '03', label: 'Services', keywords: 'freelance hire android ios app website automation' },
-  { id: 'experience', n: '04', label: 'Experience' },
-  { id: 'skills', n: '05', label: 'Skills' },
-  { id: 'education', n: '06', label: 'Education' },
+  { id: 'experience', n: '03', label: 'Experience' },
+  { id: 'skills', n: '04', label: 'Skills' },
+  { id: 'education', n: '05', label: 'Education' },
+  { id: 'services', n: '06', label: 'Services', keywords: 'freelance hire android ios app website automation' },
   { id: 'contact', n: '07', label: 'Contact' },
 ]
 

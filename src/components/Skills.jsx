@@ -5,7 +5,7 @@ export default function Skills() {
   return (
     <section className="section skills" id="skills" aria-labelledby="skills-title">
       <div className="wrap">
-        <SectionHead n="05" label="Technical skills" id="skills-title">
+        <SectionHead n="04" label="Technical skills" id="skills-title">
           The <em>toolkit</em>, grouped by layer.
         </SectionHead>
 

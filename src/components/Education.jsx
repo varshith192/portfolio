@@ -6,7 +6,7 @@ export default function Education() {
   return (
     <section className="section edu" id="education" aria-labelledby="edu-title">
       <div className="wrap">
-        <SectionHead n="06" label="Education & certifications" id="edu-title">
+        <SectionHead n="05" label="Education & certifications" id="edu-title">
           Grounded in <em>fundamentals</em>, verified by credentials.
         </SectionHead>
 

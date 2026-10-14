@@ -7,7 +7,7 @@ export default function Experience() {
   return (
     <section className="section exp" id="experience" aria-labelledby="exp-title">
       <div className="wrap">
-        <SectionHead n="03" label="Experience" id="exp-title">
+        <SectionHead n="04" label="Experience" id="exp-title">
           Where I&rsquo;ve <em>shipped</em> so far.
         </SectionHead>
 

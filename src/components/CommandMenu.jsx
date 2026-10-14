@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import { certifications, experience, nav, profile, projects } from '../data/content.js'
 import { lockScroll, scrollToHash } from '../lib/smooth.js'
 import { toast } from '../lib/toast.js'
-import { ArrowUpRight, CopyIcon, DownloadIcon, GitHubIcon, LinkedInIcon, MailIcon } from './Icons.jsx'
+import { ArrowUpRight, CopyIcon, DownloadIcon, GitHubIcon, LinkedInIcon, MailIcon, PhoneIcon, WhatsAppIcon } from './Icons.jsx'
 
 // ⌘K menu styled as an orchestrator routing a request to an "agent" (group).
 // It is a plain keyword router over the site's own links: no model involved.
@@ -33,6 +33,7 @@ function buildItems() {
       id: `nav-${n.id}`,
       group: 'navigate',
       title: n.label,
+      keywords: n.keywords,
       icon: <Glyph>{n.n}</Glyph>,
       kind: 'go',
       run: () => scrollToHash(`#${n.id}`),
@@ -60,6 +61,26 @@ function buildItems() {
       run: () => openUrl(p.repo),
     })),
 
+    {
+      id: 'whatsapp',
+      group: 'actions',
+      title: 'Message on WhatsApp',
+      sub: `${profile.phone} · freelance projects`,
+      keywords: 'whatsapp chat message hire freelance contact phone project',
+      icon: <WhatsAppIcon />,
+      kind: 'open',
+      run: () => openUrl(profile.whatsapp),
+    },
+    {
+      id: 'call',
+      group: 'actions',
+      title: 'Call Varshith',
+      sub: profile.phone,
+      keywords: 'call phone mobile number contact hire',
+      icon: <PhoneIcon />,
+      kind: 'open',
+      run: () => (window.location.href = profile.tel),
+    },
     {
       id: 'copy-email',
       group: 'actions',

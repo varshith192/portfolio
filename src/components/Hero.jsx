@@ -3,7 +3,7 @@ import { profile } from '../data/content.js'
 import { usePointerVars } from '../hooks.js'
 import AgentGraph from './AgentGraph.jsx'
 import SplitText from './SplitText.jsx'
-import { ArrowDown, ArrowUpRight, GitHubIcon, LinkedInIcon } from './Icons.jsx'
+import { ArrowDown, ArrowUpRight, GitHubIcon, LinkedInIcon, WhatsAppIcon } from './Icons.jsx'
 
 export default function Hero() {
   const ref = useRef(null)
@@ -57,6 +57,12 @@ export default function Hero() {
               <span className="pulse" aria-hidden="true" />
               {profile.name} · Portfolio 2026
             </p>
+            <a className="hero__avail" href="#services">
+              <span className="svc__dot" aria-hidden="true" />
+              <span className="hero__avail-long">Open for freelance · AI automation, web &amp; mobile apps</span>
+              <span className="hero__avail-short">Open for freelance projects</span>
+              <ArrowDown />
+            </a>
             <h1 id="hero-title" className="hero__title" ref={titleRef}>
               <SplitText>
                 hi, i&rsquo;m <em>varshith.</em>
@@ -84,6 +90,11 @@ export default function Hero() {
               <li>
                 <a href={profile.links.linkedin} target="_blank" rel="noopener">
                   <LinkedInIcon /> LinkedIn
+                </a>
+              </li>
+              <li>
+                <a href={profile.whatsapp} target="_blank" rel="noopener">
+                  <WhatsAppIcon /> WhatsApp
                 </a>
               </li>
               <li className="hero__ask">

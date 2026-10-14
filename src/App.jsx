@@ -3,6 +3,8 @@ import Header from './components/Header.jsx'
 import Hero from './components/Hero.jsx'
 import About from './components/About.jsx'
 import Projects from './components/Projects.jsx'
+import Services from './components/Services.jsx'
+import WhatsAppFab from './components/WhatsAppFab.jsx'
 import Experience from './components/Experience.jsx'
 import Skills from './components/Skills.jsx'
 import Education from './components/Education.jsx'
@@ -37,6 +39,7 @@ export default function App() {
           <div className="paper">
             <About />
             <Projects />
+            <Services />
             <Experience />
             <Skills />
             <Education />
@@ -45,6 +48,7 @@ export default function App() {
         <Contact />
       </main>
       <CommandMenu />
+      <WhatsAppFab />
       <Toaster />
     </>
   )

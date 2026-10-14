@@ -4,7 +4,7 @@ import { usePointerVars } from '../hooks.js'
 import { toast } from '../lib/toast.js'
 import Scramble from './Scramble.jsx'
 import SplitText from './SplitText.jsx'
-import { ArrowUpRight, CopyIcon, DownloadIcon, GitHubIcon, LinkedInIcon } from './Icons.jsx'
+import { ArrowUpRight, CopyIcon, DownloadIcon, GitHubIcon, LinkedInIcon, PhoneIcon, WhatsAppIcon } from './Icons.jsx'
 
 export default function Contact() {
   const ref = useRef(null)
@@ -27,7 +27,7 @@ export default function Contact() {
       <div className="spot" aria-hidden="true" />
       <div className="wrap contact__inner">
         <p className="shead__meta shead__meta--dark" data-reveal>
-          <span className="shead__n">06</span>
+          <span className="shead__n">07</span>
           <span className="shead__rule" aria-hidden="true" />
           <Scramble className="shead__label" text="Contact" />
         </p>
@@ -48,10 +48,29 @@ export default function Contact() {
           </button>
         </div>
 
+        <div className="contact__phone" data-reveal>
+          <p className="contact__phone-label">
+            <span className="svc__dot" aria-hidden="true" /> WhatsApp &amp; call · freelance projects welcome
+          </p>
+          <a className="contact__phone-num" href={profile.tel}>
+            {profile.phone}
+          </a>
+        </div>
+
         <ul className="contact__links" data-reveal>
           <li>
+            <a className="btn btn--wa" href={profile.whatsapp} target="_blank" rel="noopener" data-magnetic="0.25">
+              <WhatsAppIcon /> WhatsApp me
+            </a>
+          </li>
+          <li>
+            <a className="btn btn--ghost-light" href={profile.tel} data-magnetic="0.25">
+              <PhoneIcon /> Call
+            </a>
+          </li>
+          <li>
             <a
-              className="btn btn--light"
+              className="btn btn--ghost-light"
               href={profile.resume}
               download="Dara_Sai_Varshith_Resume.pdf"
               data-magnetic="0.25"

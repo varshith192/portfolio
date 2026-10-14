@@ -111,6 +111,8 @@ export default function Header() {
           ))}
         </ol>
         <div className="mnav__foot">
+          <a href={profile.whatsapp} target="_blank" rel="noopener">WhatsApp ↗</a>
+          <a href={profile.tel}>Call {profile.phone}</a>
           <a href={profile.resume} target="_blank" rel="noopener">Résumé ↗</a>
           <a href={profile.links.github} target="_blank" rel="noopener">GitHub ↗</a>
           <a href={profile.links.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a>

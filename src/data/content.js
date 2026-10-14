@@ -9,6 +9,9 @@ export const profile = {
   role: 'Agentic AI Engineer',
   roles: ['Agentic AI Engineer', 'AI Developer', 'Software Engineer'],
   email: 'varshithdhara@gmail.com',
+  phone: '+91 91545 73647',
+  tel: 'tel:+919154573647',
+  whatsapp: `https://wa.me/919154573647?text=${encodeURIComponent("Hi Varshith, I found your portfolio and would like to discuss a project.")}`,
   resume: `${BASE}resume/Dara_Sai_Varshith_Resume.pdf`,
   links: {
     github: 'https://github.com/varshith192',
@@ -20,10 +23,11 @@ export const profile = {
 export const nav = [
   { id: 'about', n: '01', label: 'About' },
   { id: 'work', n: '02', label: 'Work' },
-  { id: 'experience', n: '03', label: 'Experience' },
-  { id: 'skills', n: '04', label: 'Skills' },
-  { id: 'education', n: '05', label: 'Education' },
-  { id: 'contact', n: '06', label: 'Contact' },
+  { id: 'services', n: '03', label: 'Services', keywords: 'freelance hire android ios app website automation' },
+  { id: 'experience', n: '04', label: 'Experience' },
+  { id: 'skills', n: '05', label: 'Skills' },
+  { id: 'education', n: '06', label: 'Education' },
+  { id: 'contact', n: '07', label: 'Contact' },
 ]
 
 export const projects = [
@@ -211,3 +215,40 @@ export const diagramTips = {
     mon: 'Banking compliance and risk-monitoring workflow.',
   },
 }
+
+// Freelance offering (as stated by Varshith). Describes what he takes on,
+// not past client work.
+export const services = [
+  {
+    id: 'ai',
+    title: 'AI automations & agents',
+    blurb:
+      'Multi-agent workflows, LLM integrations, RAG assistants and automations that take repetitive work off your team.',
+    tags: ['LangGraph', 'LangChain', 'RAG', 'Python', 'APIs'],
+  },
+  {
+    id: 'web',
+    title: 'Full-stack websites',
+    blurb: 'Fast, responsive websites and web apps, from the interface to the backend, database and APIs behind it.',
+    tags: ['React', 'Next.js', 'Flask', 'REST APIs', 'SQL / MongoDB'],
+  },
+  {
+    id: 'android',
+    title: 'Android apps',
+    blurb: 'Android apps designed around your users, connected to your backend and ready for the Play Store.',
+    tags: ['Android', 'Play Store', 'API integration'],
+  },
+  {
+    id: 'ios',
+    title: 'iOS apps',
+    blurb: 'iPhone and iPad apps with a clean, native feel, connected to your backend and ready for the App Store.',
+    tags: ['iOS', 'App Store', 'API integration'],
+  },
+]
+
+export const process = [
+  { n: '01', title: 'Say hello', text: 'Message or call on WhatsApp, or send an email, with a short note on what you need.' },
+  { n: '02', title: 'Scope & quote', text: 'We agree on features, timeline and price before any work starts.' },
+  { n: '03', title: 'Build', text: 'Regular updates and working previews while it comes together.' },
+  { n: '04', title: 'Launch & handover', text: 'Deployment, source code and a walkthrough so you own everything.' },
+]

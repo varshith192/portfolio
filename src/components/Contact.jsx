@@ -3,6 +3,7 @@ import { profile } from '../data/content.js'
 import { usePointerVars } from '../hooks.js'
 import { toast } from '../lib/toast.js'
 import Scramble from './Scramble.jsx'
+import LocalTime from './LocalTime.jsx'
 import SplitText from './SplitText.jsx'
 import { ArrowUpRight, CopyIcon, DownloadIcon, GitHubIcon, LinkedInIcon, PhoneIcon, WhatsAppIcon } from './Icons.jsx'
 
@@ -55,6 +56,7 @@ export default function Contact() {
           <a className="contact__phone-num" href={profile.tel}>
             {profile.phone}
           </a>
+          <LocalTime className="ltime" />
         </div>
 
         <ul className="contact__links" data-reveal>

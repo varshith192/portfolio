@@ -7,6 +7,7 @@ import './styles/sections.css'
 import './styles/features.css'
 import './styles/services.css'
 import './styles/canvas.css'
+import './styles/trending.css'
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>

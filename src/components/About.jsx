@@ -1,4 +1,5 @@
 import SectionHead from './SectionHead.jsx'
+import GitHubLive from './GitHubLive.jsx'
 
 const facts = [
   { k: 'Degree', v: 'B.Tech, Computer Science & Engineering' },
@@ -33,6 +34,7 @@ export default function About() {
             </p>
           </div>
 
+          <div className="about__side">
           <dl className="facts" data-reveal>
             {facts.map((f) => (
               <div className="facts__row" key={f.k}>
@@ -41,6 +43,8 @@ export default function About() {
               </div>
             ))}
           </dl>
+          <GitHubLive />
+          </div>
         </div>
       </div>
     </section>

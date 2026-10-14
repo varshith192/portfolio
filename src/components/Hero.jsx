@@ -65,8 +65,10 @@ export default function Hero() {
             </a>
             <h1 id="hero-title" className="hero__title" ref={titleRef}>
               <SplitText>
-                hi, i&rsquo;m <em>varshith.</em>
+                hi, i&rsquo;m <span className="hero__name">varshith</span>
+                <span className="hero__dot">.</span>
               </SplitText>
+              <span className="hero__caret" aria-hidden="true" />
             </h1>
             <p className="hero__role">AI Engineer. Agentic AI Developer.</p>
             <p className="hero__lede">

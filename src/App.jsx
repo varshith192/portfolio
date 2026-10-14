@@ -11,6 +11,7 @@ import Education from './components/Education.jsx'
 import Contact from './components/Contact.jsx'
 import CommandMenu from './components/CommandMenu.jsx'
 import Toaster from './components/Toaster.jsx'
+import CursorDot from './components/CursorDot.jsx'
 import { useMagnetics, useReveal } from './hooks.js'
 import { initSmoothScroll, interceptAnchors } from './lib/smooth.js'
 
@@ -50,6 +51,7 @@ export default function App() {
       <CommandMenu />
       <WhatsAppFab />
       <Toaster />
+      <CursorDot />
     </>
   )
 }

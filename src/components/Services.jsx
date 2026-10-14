@@ -1,6 +1,6 @@
-import { process, profile, services } from '../data/content.js'
+import { process, services } from '../data/content.js'
 import SectionHead from './SectionHead.jsx'
-import { ArrowUpRight, MailIcon, PhoneIcon, WhatsAppIcon } from './Icons.jsx'
+import { ArrowUpRight, WhatsAppIcon } from './Icons.jsx'
 
 const waFor = (service) =>
   `https://wa.me/919154573647?text=${encodeURIComponent(`Hi Varshith, I'd like to discuss a project: ${service}.`)}`
@@ -55,25 +55,6 @@ export default function Services() {
           </ol>
         </div>
 
-        <div className="svc__cta" data-reveal>
-          <div>
-            <p className="svc__cta-title">
-              Have a project in mind? <em>Let&rsquo;s talk.</em>
-            </p>
-            <p className="svc__cta-sub">WhatsApp or call {profile.phone} · or email {profile.email}</p>
-          </div>
-          <div className="svc__cta-actions">
-            <a className="btn btn--wa" href={profile.whatsapp} target="_blank" rel="noopener" data-magnetic="0.25">
-              <WhatsAppIcon /> WhatsApp me
-            </a>
-            <a className="btn btn--ghost-light" href={profile.tel} data-magnetic="0.25">
-              <PhoneIcon /> Call {profile.phone}
-            </a>
-            <a className="btn btn--ghost-light" href={`mailto:${profile.email}`} data-magnetic="0.25">
-              <MailIcon /> Email
-            </a>
-          </div>
-        </div>
       </div>
     </section>
   )

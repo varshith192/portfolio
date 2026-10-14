@@ -1,0 +1,84 @@
+/* Draggable hero graph */
+.agraph__hit {
+  fill: transparent;
+}
+.agraph__agent,
+.agraph__hubg {
+  cursor: grab;
+  touch-action: none;
+}
+.agraph-wrap.is-dragging,
+.agraph-wrap.is-dragging .agraph__agent,
+.agraph-wrap.is-dragging .agraph__hubg {
+  cursor: grabbing;
+}
+.agraph-wrap {
+  user-select: none;
+  -webkit-user-select: none;
+}
+.agraph__agent:hover .agraph__agent-ring,
+.agraph__agent.is-grabbed .agraph__agent-ring {
+  stroke: var(--on-night);
+}
+.agraph__agent.is-grabbed .agraph__agent-ring {
+  fill: #1a1210;
+  stroke-width: 1.6;
+}
+.agraph__hubg:hover .agraph__hub,
+.agraph__hubg.is-grabbed .agraph__hub {
+  stroke-width: 2.4;
+}
+/* while dragging, keep the parallax still so the node tracks the cursor exactly */
+.agraph-wrap.is-dragging .agraph__l0,
+.agraph-wrap.is-dragging .agraph__l1 {
+  transition: none;
+}
+
+.agraph__bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  margin-top: 0.4rem;
+  min-height: 1.9rem;
+}
+.agraph__bar .agraph__trace {
+  margin-top: 0;
+}
+.agraph__hint,
+.agraph__reset {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: var(--on-night-muted);
+  white-space: nowrap;
+}
+.agraph__hint {
+  padding: 0.3rem 0.6rem;
+  border: 1px dashed var(--line-night-strong);
+  border-radius: 999px;
+  animation: fade 1s var(--ease) 2.4s both;
+}
+.agraph__reset {
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--line-night-strong);
+  border-radius: 999px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.agraph__reset:hover {
+  color: var(--on-night);
+  border-color: var(--on-night);
+}
+@media (max-width: 900px) {
+  .agraph__bar {
+    display: none;
+  }
+}
+
+.agraph__glow,
+.agraph__packet,
+.agraph__ring,
+.agraph__edge,
+.agraph__l0 {
+  pointer-events: none;
+}

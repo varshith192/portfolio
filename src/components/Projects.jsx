@@ -1,28 +1,37 @@
 import { projects } from '../data/content.js'
 import SectionHead from './SectionHead.jsx'
 import { ArrowUpRight, GitHubIcon } from './Icons.jsx'
-import { ItOpsDiagram, StelosDiagram, AstraGovDiagram } from './Diagrams.jsx'
+import { ItOpsDiagram, StelosDiagram, AstraGovDiagram, itopsSteps, stelosSteps, astraSteps } from './Diagrams.jsx'
+import FlowConsole from './FlowConsole.jsx'
+import { useFlow } from '../useFlow.js'
 
-const diagrams = { itops: ItOpsDiagram, stelos: StelosDiagram, astragov: AstraGovDiagram }
+const diagrams = {
+  itops: [ItOpsDiagram, itopsSteps],
+  stelos: [StelosDiagram, stelosSteps],
+  astragov: [AstraGovDiagram, astraSteps],
+}
 
 function Figure({ project }) {
-  const Diagram = diagrams[project.diagram]
+  const [Diagram, steps] = diagrams[project.diagram]
+  const flow = useFlow(steps)
   return (
     <figure className="fig" data-reveal>
       <div className="fig__frame">
         <span className="fig__corner fig__corner--tl" aria-hidden="true" />
         <span className="fig__corner fig__corner--br" aria-hidden="true" />
         <div className="fig__scroll">
-          <Diagram />
+          <Diagram svgRef={flow.svgRef} />
         </div>
+        <FlowConsole flow={flow} />
       </div>
       <p className="fig__hint" aria-hidden="true">
         Swipe to see the full diagram →
       </p>
       <figcaption className="fig__cap">
         <span>Fig. {project.index}</span>
-        Conceptual architecture, simplified for illustration. Components are named from the project description; see
-        the repository for the implementation.
+        Conceptual architecture with a simulated run, simplified for illustration. Components are named from the
+        project description; the trace shows the intended flow, not recorded output. See the repository for the
+        implementation.
       </figcaption>
     </figure>
   )

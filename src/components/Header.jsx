@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { nav, profile } from '../data/content.js'
 import { useActiveSection, useScrollProgress } from '../hooks.js'
+import Brand from './Brand.jsx'
 
 const ids = ['top', ...nav.map((n) => n.id)]
 
@@ -40,8 +41,7 @@ export default function Header() {
     <header className={`hdr${solid ? ' is-solid' : ''}${onDark ? ' on-dark' : ''}${open ? ' is-open' : ''}`}>
       <div className="hdr__bar">
         <a className="hdr__mark" href="#top" onClick={() => setOpen(false)} aria-label="Dara Sai Varshith, back to top">
-          <span className="hdr__dot" aria-hidden="true" />
-          <span>d.s.varshith</span>
+          <Brand />
         </a>
 
         <nav className="hdr__nav" aria-label="Primary">

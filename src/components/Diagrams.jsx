@@ -1,5 +1,6 @@
 // Conceptual architecture figures for the three case studies.
 // Shapes only name components that appear in each project's description.
+// Each diagram exports `steps`: a simulated trace that useFlow plays back.
 
 function Defs({ id }) {
   return (
@@ -10,14 +11,29 @@ function Defs({ id }) {
       <pattern id={`${id}-dots`} width="14" height="14" patternUnits="userSpaceOnUse">
         <circle cx="1" cy="1" r=".9" className="dg-dot" />
       </pattern>
+      <radialGradient id={`${id}-glow`}>
+        <stop offset="0%" stopColor="var(--accent)" stopOpacity=".55" />
+        <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
+      </radialGradient>
     </defs>
   )
 }
 
-function Box({ x, y, w, h, title, sub, step, accent, dashed }) {
+function Packet({ id }) {
   return (
-    <g className={`dg-box${accent ? ' dg-box--accent' : ''}${dashed ? ' dg-box--dashed' : ''}`}>
+    <g data-packet className="dg-packet" aria-hidden="true">
+      <circle r="12" fill={`url(#${id}-glow)`} cx="-50" cy="-50" />
+      <circle r="4.5" className="dg-packet__head" cx="-50" cy="-50" />
+      <circle r="2.6" className="dg-packet__tail" cx="-50" cy="-50" />
+    </g>
+  )
+}
+
+function Box({ x, y, w, h, title, sub, step, accent, node }) {
+  return (
+    <g className={`dg-box${accent ? ' dg-box--accent' : ''}`} data-node={node}>
       <rect x={x} y={y} width={w} height={h} rx="10" />
+      <circle cx={x + w - 14} cy={y + 14} r="3" className="dg-led" />
       {step && (
         <text x={x + 14} y={y + 22} className="dg-step">
           {step}
@@ -35,12 +51,13 @@ function Box({ x, y, w, h, title, sub, step, accent, dashed }) {
   )
 }
 
-function Edge({ d, id, label, lx, ly, flow, both, anchor = 'middle' }) {
+function Edge({ d, id, eid, label, lx, ly, both, anchor = 'middle' }) {
   return (
     <g>
       <path
         d={d}
-        className={`dg-edge${flow ? ' dg-flow' : ''}`}
+        data-edge={eid}
+        className="dg-edge"
         markerEnd={`url(#${id}-arrow)`}
         markerStart={both ? `url(#${id}-arrow)` : undefined}
       />
@@ -53,10 +70,20 @@ function Edge({ d, id, label, lx, ly, flow, both, anchor = 'middle' }) {
   )
 }
 
-export function ItOpsDiagram() {
+/* ---------------- Dynamic IT Operations Orchestrator ---------------- */
+
+export const itopsSteps = [
+  { edge: 'sig', node: 'monitor', who: 'monitor', text: 'reading infrastructure signals' },
+  { edge: 'md', node: 'detect', who: 'detect', text: 'anomaly found on resource b', flag: 'alert' },
+  { edge: 'ev', node: 'orch', who: 'orchestrate', text: 'event received, selecting workflow', flag: 'alert' },
+  { edge: 'or', node: 'remed', who: 'remediate', text: 'running self-healing workflow', flag: 'alert', hold: 900 },
+  { edge: 'heal', node: 'infra', who: 'infra', text: 'resource b healthy again', flag: 'healed', hold: 1400 },
+]
+
+export function ItOpsDiagram({ svgRef }) {
   const id = 'itops'
   return (
-    <svg viewBox="0 0 660 360" className="dg" role="img" aria-labelledby={`${id}-t`}>
+    <svg ref={svgRef} viewBox="0 0 660 360" className="dg" role="img" aria-labelledby={`${id}-t`}>
       <title id={`${id}-t`}>
         Event-driven loop: AWS infrastructure is monitored, anomalies are detected as events, an orchestrator decides,
         and a self-healing workflow remediates the infrastructure.
@@ -64,42 +91,54 @@ export function ItOpsDiagram() {
       <Defs id={id} />
       <rect x="0" y="0" width="660" height="360" fill={`url(#${id}-dots)`} />
 
-      <g className="dg-group">
+      <g className="dg-group" data-node="infra">
         <rect x="20" y="40" width="160" height="280" rx="14" />
         <text x="36" y="68" className="dg-step">AWS</text>
         <text x="36" y="88" className="dg-title">Cloud infra</text>
       </g>
       {[120, 182, 244].map((y, i) => (
-        <g className="dg-node" key={y}>
+        <g className={`dg-node${i === 1 ? ' dg-node--watch' : ''}`} key={y}>
           <rect x="40" y={y} width="120" height="44" rx="8" />
-          <circle cx="58" cy={y + 22} r="4" className={i === 1 ? 'dg-alert' : 'dg-ok'} />
+          <circle cx="58" cy={y + 22} r="4" className="dg-ok" />
           <text x="72" y={y + 27} className="dg-sub">
             resource {String.fromCharCode(97 + i)}
           </text>
         </g>
       ))}
 
-      <Box x={230} y={52} w={180} h={78} step="01" title="Monitor" sub="AI agent · Python" />
-      <Box x={460} y={52} w={180} h={78} step="02" title="Detect" sub="anomaly detection" />
-      <Box x={460} y={230} w={180} h={78} step="03" title="Orchestrate" sub="triggers workflows" accent />
-      <Box x={230} y={230} w={180} h={78} step="04" title="Remediate" sub="self-healing" />
+      <Box node="monitor" x={230} y={52} w={180} h={78} step="01" title="Monitor" sub="AI agent · Python" />
+      <Box node="detect" x={460} y={52} w={180} h={78} step="02" title="Detect" sub="anomaly detection" />
+      <Box node="orch" x={460} y={230} w={180} h={78} step="03" title="Orchestrate" sub="triggers workflows" accent />
+      <Box node="remed" x={230} y={230} w={180} h={78} step="04" title="Remediate" sub="self-healing" />
 
-      <Edge id={id} d="M180 91 H226" flow label="signals" lx={203} ly={82} />
-      <Edge id={id} d="M410 91 H456" flow />
-      <Edge id={id} d="M550 130 V226" flow label="event" lx={562} ly={183} anchor="start" />
-      <Edge id={id} d="M460 269 H414" flow />
-      <Edge id={id} d="M230 269 H184" flow label="heal" lx={207} ly={260} />
+      <Edge id={id} eid="sig" d="M180 91 H226" label="signals" lx={203} ly={82} />
+      <Edge id={id} eid="md" d="M410 91 H456" />
+      <Edge id={id} eid="ev" d="M550 130 V226" label="event" lx={562} ly={183} anchor="start" />
+      <Edge id={id} eid="or" d="M460 269 H414" />
+      <Edge id={id} eid="heal" d="M230 269 H184" label="heal" lx={207} ly={260} />
 
       <g className="dg-center">
         <circle cx="435" cy="180" r="26" />
         <path d="M424 172a13 13 0 1 1-1 13" className="dg-cycle" markerEnd={`url(#${id}-arrow)`} />
       </g>
       <text x="380" y="184" textAnchor="end" className="dg-edge-label">REST APIs</text>
+      <Packet id={id} />
     </svg>
   )
 }
 
-export function StelosDiagram() {
+/* ---------------- STELOS ---------------- */
+
+export const stelosSteps = [
+  { edge: 'api', node: 'hub', who: 'api', text: 'maintenance query received' },
+  { edge: 'rag', node: 'faiss', who: 'rag', text: 'retrieving context from FAISS' },
+  { edge: 'rag', reverse: true, node: 'hub', who: 'langgraph', text: 'nine agents reasoning over context', flag: 'think', hold: 2000 },
+  { edge: 'ml', node: 'xgb', who: 'xgboost', text: 'scoring with the predictive model' },
+  { edge: 'ml', reverse: true, node: 'hub', who: 'langgraph', text: 'combining retrieval and prediction', flag: 'think', hold: 1200 },
+  { edge: 'hitl', node: 'hitl', who: 'human', text: 'waiting for engineer validation', hold: 1600 },
+]
+
+export function StelosDiagram({ svgRef }) {
   const id = 'stelos'
   const cx = 320
   const cy = 210
@@ -109,7 +148,7 @@ export function StelosDiagram() {
     return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) }
   })
   return (
-    <svg viewBox="0 0 660 420" className="dg" role="img" aria-labelledby={`${id}-t`}>
+    <svg ref={svgRef} viewBox="0 0 660 420" className="dg" role="img" aria-labelledby={`${id}-t`}>
       <title id={`${id}-t`}>
         Requests enter through Flask and FastAPI REST APIs to a LangGraph graph of nine agents, which retrieve context
         from a FAISS index, call an XGBoost predictive model, and pass results to human-in-the-loop validation.
@@ -117,45 +156,62 @@ export function StelosDiagram() {
       <Defs id={id} />
       <rect x="0" y="0" width="660" height="420" fill={`url(#${id}-dots)`} />
 
-      <Box x={16} y={168} w={150} h={84} step="API" title="REST APIs" sub="Flask / FastAPI" />
+      <Box node="api" x={16} y={168} w={150} h={84} step="API" title="REST APIs" sub="Flask / FastAPI" />
 
       <circle cx={cx} cy={cy} r={r + 34} className="dg-orbit" />
       <circle cx={cx} cy={cy} r={r} className="dg-orbit dg-orbit--dash" />
-      {agents.map((a, i) => (
-        <line key={`l${i}`} x1={cx} y1={cy} x2={a.x} y2={a.y} className="dg-spoke" />
-      ))}
-      {agents.map((a, i) => (
-        <g key={`a${i}`} className="dg-agent" style={{ '--i': i }}>
-          <circle cx={a.x} cy={a.y} r="13" />
-          <text x={a.x} y={a.y + 4} textAnchor="middle" className="dg-agent-n">
-            {i + 1}
-          </text>
-        </g>
-      ))}
-      <circle cx={cx} cy={cy} r="40" className="dg-hub" />
-      <text x={cx} y={cy - 2} textAnchor="middle" className="dg-hub-t">LangGraph</text>
-      <text x={cx} y={cy + 15} textAnchor="middle" className="dg-hub-s">9 agents</text>
+      <g className="dg-ring">
+        {agents.map((a, i) => (
+          <line key={`l${i}`} x1={cx} y1={cy} x2={a.x} y2={a.y} className="dg-spoke" style={{ '--i': i }} />
+        ))}
+        {agents.map((a, i) => (
+          <g key={`a${i}`} className="dg-agent" style={{ '--i': i }}>
+            <circle cx={a.x} cy={a.y} r="13" />
+            <text x={a.x} y={a.y + 4} textAnchor="middle" className="dg-agent-n">
+              {i + 1}
+            </text>
+          </g>
+        ))}
+      </g>
+      <g className="dg-hubg" data-node="hub">
+        <circle cx={cx} cy={cy} r="40" className="dg-hub" />
+        <text x={cx} y={cy - 2} textAnchor="middle" className="dg-hub-t">LangGraph</text>
+        <text x={cx} y={cy + 15} textAnchor="middle" className="dg-hub-s">9 agents</text>
+      </g>
 
-      <Box x={494} y={34} w={150} h={84} step="RAG" title="FAISS index" sub="retrieval" />
-      <Box x={494} y={168} w={150} h={84} step="ML" title="XGBoost" sub="predictive model" />
-      <Box x={494} y={302} w={150} h={84} step="HITL" title="Human review" sub="validation layer" accent />
+      <Box node="faiss" x={494} y={34} w={150} h={84} step="RAG" title="FAISS index" sub="retrieval" />
+      <Box node="xgb" x={494} y={168} w={150} h={84} step="ML" title="XGBoost" sub="predictive model" />
+      <Box node="hitl" x={494} y={302} w={150} h={84} step="HITL" title="Human review" sub="validation layer" accent />
 
-      <Edge id={id} d="M166 210 H222" flow both />
-      <Edge id={id} d="M402 150 L490 92" flow both label="context" lx={452} ly={108} />
-      <Edge id={id} d="M418 210 H490" flow both label="predict" lx={454} ly={202} />
-      <Edge id={id} d="M402 270 L490 330" flow label="review" lx={452} ly={318} />
+      <Edge id={id} eid="api" d="M166 210 H278" both />
+      <Edge id={id} eid="rag" d="M352 186 L490 92" both label="context" lx={452} ly={108} />
+      <Edge id={id} eid="ml" d="M362 210 H490" both label="predict" lx={454} ly={202} />
+      <Edge id={id} eid="hitl" d="M352 234 L490 330" label="review" lx={452} ly={318} />
       <text x={cx} y="402" textAnchor="middle" className="dg-edge-label">
         LLM-powered agents · predictive maintenance
       </text>
+      <Packet id={id} />
     </svg>
   )
 }
 
-export function AstraGovDiagram() {
+/* ---------------- AstraGov AI ---------------- */
+
+export const astraSteps = [
+  { edge: 'rest', node: 'api', who: 'frontend', text: 'compliance check requested over REST' },
+  { edge: 'crew', node: 'crew', who: 'crew', text: 'five agents assessing the case', flag: 'think', hold: 1600 },
+  { edge: 'db', node: 'mongo', who: 'mongodb', text: 'reading and writing records' },
+  { edge: 'db', reverse: true, node: 'crew', who: 'crew', text: 'risk assessment complete', flag: 'think', hold: 900 },
+  { edge: 'sig', node: 'mon', who: 'monitor', text: 'risk signal raised' },
+  { edge: 'alert', node: 'api', who: 'api', text: 'alert published' },
+  { edge: 'ws', node: 'fe', who: 'frontend', text: 'live update over WebSockets', hold: 1400 },
+]
+
+export function AstraGovDiagram({ svgRef }) {
   const id = 'astra'
   const crew = [0, 1, 2, 3, 4].map((i) => ({ x: 316 + i * 30, y: 280 }))
   return (
-    <svg viewBox="0 0 680 380" className="dg" role="img" aria-labelledby={`${id}-t`}>
+    <svg ref={svgRef} viewBox="0 0 680 380" className="dg" role="img" aria-labelledby={`${id}-t`}>
       <title id={`${id}-t`}>
         A Next.js frontend talks to Flask REST APIs and receives live updates over WebSockets. The API drives a crew of
         five LangChain and CrewAI agents that read and write MongoDB and feed the compliance and risk monitoring workflow.
@@ -163,7 +219,7 @@ export function AstraGovDiagram() {
       <Defs id={id} />
       <rect x="0" y="0" width="680" height="380" fill={`url(#${id}-dots)`} />
 
-      <g className="dg-group">
+      <g className="dg-group" data-node="fe">
         <rect x="16" y="30" width="172" height="320" rx="14" />
         <text x="32" y="58" className="dg-step">CLIENT</text>
         <text x="32" y="80" className="dg-title">Frontend</text>
@@ -177,38 +233,41 @@ export function AstraGovDiagram() {
         </g>
       ))}
 
-      <Box x={276} y={30} w={170} h={84} step="SERVER" title="REST APIs" sub="Flask" />
+      <Box node="api" x={276} y={30} w={170} h={84} step="SERVER" title="REST APIs" sub="Flask" />
 
-      <g className="dg-group dg-group--soft">
+      <g className="dg-group dg-group--soft" data-node="crew">
         <rect x="276" y="168" width="170" height="182" rx="14" />
         <text x="292" y="196" className="dg-step">AGENTS</text>
         <text x="292" y="218" className="dg-title">Agent crew</text>
         <text x="292" y="236" className="dg-sub">LangChain · CrewAI</text>
       </g>
-      {crew.map((c, i) => (
-        <g key={i} className="dg-agent" style={{ '--i': i }}>
-          <circle cx={c.x} cy={c.y} r="11" />
-          <text x={c.x} y={c.y + 4} textAnchor="middle" className="dg-agent-n">
-            {i + 1}
-          </text>
-        </g>
-      ))}
+      <g className="dg-ring">
+        {crew.map((c, i) => (
+          <g key={i} className="dg-agent" style={{ '--i': i }}>
+            <circle cx={c.x} cy={c.y} r="11" />
+            <text x={c.x} y={c.y + 4} textAnchor="middle" className="dg-agent-n">
+              {i + 1}
+            </text>
+          </g>
+        ))}
+      </g>
       <text x="292" y="326" className="dg-sub">LLM-driven, 5 agents</text>
 
-      <Box x={500} y={30} w={166} h={84} step="WORKFLOW" title="Compliance" sub="& risk monitoring" accent />
+      <Box node="mon" x={500} y={30} w={166} h={84} step="WORKFLOW" title="Compliance" sub="& risk monitoring" accent />
 
-      <g className="dg-db">
+      <g className="dg-db" data-node="mongo">
         <path d="M500 200 v100 a83 16 0 0 0 166 0 v-100" />
         <ellipse cx="583" cy="200" rx="83" ry="16" />
         <text x="583" y="262" textAnchor="middle" className="dg-title">MongoDB</text>
       </g>
 
-      <Edge id={id} d="M188 60 H272" flow label="REST" lx={230} ly={52} />
-      <Edge id={id} d="M272 96 H192" flow label="WebSockets" lx={230} ly={116} />
-      <Edge id={id} d="M361 114 V164" flow both />
-      <Edge id={id} d="M446 260 H496" flow both label="read / write" lx={472} ly={250} />
-      <Edge id={id} d="M446 190 L540 118" flow label="signals" lx={500} ly={172} anchor="start" />
-      <Edge id={id} d="M500 72 H450" flow label="alerts" lx={475} ly={64} />
+      <Edge id={id} eid="rest" d="M188 60 H272" label="REST" lx={230} ly={52} />
+      <Edge id={id} eid="ws" d="M272 96 H192" label="WebSockets" lx={230} ly={116} />
+      <Edge id={id} eid="crew" d="M361 114 V164" both />
+      <Edge id={id} eid="db" d="M446 260 H496" both label="read / write" lx={472} ly={250} />
+      <Edge id={id} eid="sig" d="M446 190 L540 118" label="signals" lx={500} ly={172} anchor="start" />
+      <Edge id={id} eid="alert" d="M500 72 H450" label="alerts" lx={475} ly={64} />
+      <Packet id={id} />
     </svg>
   )
 }

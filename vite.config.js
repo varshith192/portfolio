@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// Served from https://varshith192.github.io/portfolio/
 export default defineConfig({
-  base: '/portfolio/',
+  // Vercel serves from the root; GitHub Pages from /portfolio/
+  base: process.env.VERCEL ? '/' : '/portfolio/',
   plugins: [react()],
 })

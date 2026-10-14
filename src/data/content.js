@@ -31,9 +31,11 @@ export const projects = [
     id: 'itops',
     index: '01',
     title: 'Dynamic IT Operations Orchestrator',
+    short: 'Dynamic IT Ops Orchestrator',
     category: 'Agentic AI / Distributed Systems',
     context: null,
     date: 'March 2026',
+    ym: '2026-03',
     summary:
       'An event-driven AI agent system in Python and REST APIs that monitors distributed cloud infrastructure on AWS, applying anomaly-detection logic to trigger self-healing workflows and reduce manual intervention.',
     points: [
@@ -49,10 +51,12 @@ export const projects = [
     id: 'stelos',
     index: '02',
     title: 'STELOS',
+    short: 'STELOS',
     subtitle: 'Maintenance Intelligence Platform',
     category: 'Agentic AI / Predictive Maintenance',
     context: 'Tata Steel AI Hackathon 2026',
     date: 'June 2026',
+    ym: '2026-06',
     summary:
       'A nine-agent LangGraph backend implementing RAG with FAISS and LLM-powered agents over Flask/FastAPI REST APIs for predictive maintenance, using an XGBoost model with human-in-the-loop validation.',
     points: [
@@ -68,9 +72,11 @@ export const projects = [
     id: 'astragov',
     index: '03',
     title: 'AstraGov AI',
+    short: 'AstraGov AI',
     category: 'Agentic AI / Banking Compliance',
     context: 'Canara Bank SuRaksha Cyber Hackathon 2.0',
     date: 'June 2026',
+    ym: '2026-06',
     summary:
       'A five-agent AI backend using LangChain, CrewAI, Flask REST APIs and MongoDB, paired with a JavaScript/TypeScript frontend in Next.js, Redux, Tailwind CSS and WebSockets for LLM-driven banking compliance and risk monitoring.',
     points: [
@@ -86,9 +92,13 @@ export const projects = [
 
 export const experience = [
   {
+    id: 'virtusa',
     org: 'Virtusa Consulting Services',
+    short: 'Virtusa',
     role: 'Agentic AI Intern',
     date: 'Mar 2026 – May 2026',
+    from: '2026-03',
+    to: '2026-05',
     certificate: 'https://drive.google.com/file/d/1Fd_M5dTUoE2IYTYII81GhZr-SO8e91-C/view?usp=sharing',
     points: [
       'Built and debugged Python microservices and REST APIs for Generative AI-driven automation workflows, applying object-oriented design within Agile sprints.',
@@ -98,9 +108,13 @@ export const experience = [
     tags: ['Python', 'Microservices', 'REST APIs', 'GenAI automation', 'SQL', 'Agile', 'CI/CD'],
   },
   {
+    id: 'nitw',
     org: 'NIT Warangal',
+    short: 'NIT Warangal',
     role: 'Summer Research Intern',
     date: 'Jun 2024 – Jul 2024',
+    from: '2024-06',
+    to: '2024-07',
     certificate: 'https://drive.google.com/file/d/1WH8-jlb0JtjA_IP9B-q3eszKnVQg_gdi/view?usp=sharing',
     points: [
       'Deployed a real-time disease-prediction web app and Telegram bot backend built with Python, REST APIs, SQL and a machine learning model, serving 200+ users in a live healthcare setting.',
@@ -122,6 +136,9 @@ export const education = [
     school: 'SR University, Warangal',
     degree: 'B.Tech, Computer Science & Engineering',
     date: 'Nov 2022 – May 2026',
+    short: 'SR University',
+    from: '2022-11',
+    to: '2026-05',
     detail: 'CGPA 8.4',
     note: 'Coursework: Data Structures & Algorithms, DBMS, Operating Systems, Computer Networks, Object Oriented Programming (Java, Python), Machine Learning',
   },
@@ -129,6 +146,8 @@ export const education = [
     school: 'Narayana Junior College',
     degree: 'Intermediate, Physics, Chemistry & Mathematics',
     date: 'May 2022',
+    short: 'Narayana Jr College',
+    at: '2022-05',
     detail: '965 / 1000 (96.5%)',
   },
 ]
@@ -138,24 +157,57 @@ export const certifications = [
     name: 'Microsoft Certified: Fabric Data Engineer Associate',
     issuer: 'Microsoft',
     date: 'Sep 2026',
+    short: 'Fabric Data Engineer',
+    ym: '2026-09',
     url: 'https://learn.microsoft.com/en-us/users/darasaivarshith-3923/credentials/27afe172b789edc1',
   },
   {
     name: 'OCI Certified AI Foundations Associate',
     issuer: 'Oracle',
     date: 'Aug 2026',
+    short: 'OCI AI Foundations',
+    ym: '2026-08',
     url: 'https://catalog-education.oracle.com/pls/certview/sharebadge?id=C7781B74B08CF7153A3B4B4793F1098E5B7F684582F9A0FF4CB8F65A83D77F41',
   },
   {
     name: 'Oracle Certified Foundations Associate, Agentic AI',
     issuer: 'Oracle',
     date: 'Jul 2026',
+    short: 'Agentic AI Foundations',
+    ym: '2026-07',
     url: 'https://catalog-education.oracle.com/pls/certview/sharebadge?id=9FCBB74EB60504B7272F5755873D9A11FC6E552F424B561B4D2323EEDDF4155A',
   },
   {
     name: 'Python Essentials',
     issuer: 'Cisco Networking Academy',
     date: 'Jun 2025',
+    short: 'Python Essentials',
+    ym: '2025-06',
     url: 'https://www.credly.com/badges/267ae4b7-6e00-4cd1-a200-9b27aad43f1b',
   },
 ]
+
+// Hover notes for diagram nodes. Each restates the project description.
+export const diagramTips = {
+  itops: {
+    infra: 'AWS cloud infrastructure: the distributed resources being monitored.',
+    monitor: 'Event-driven AI agent in Python that watches infrastructure signals.',
+    detect: 'Anomaly-detection logic that decides when a signal needs action.',
+    orch: 'Turns detected events into the matching self-healing workflow.',
+    remed: 'Self-healing workflow that reduces manual intervention.',
+  },
+  stelos: {
+    api: 'Flask / FastAPI REST APIs: the entry point for requests.',
+    hub: 'LangGraph backend coordinating nine LLM-powered agents.',
+    faiss: 'FAISS vector index used for retrieval-augmented generation.',
+    xgb: 'XGBoost model behind the predictive-maintenance predictions.',
+    hitl: 'Human-in-the-loop layer where results are validated.',
+  },
+  astragov: {
+    fe: 'Next.js and TypeScript frontend with Redux and Tailwind CSS.',
+    api: 'Flask REST APIs between the frontend and the agents.',
+    crew: 'Five LLM-driven agents built with LangChain and CrewAI.',
+    mongo: 'MongoDB storage the agents read from and write to.',
+    mon: 'Banking compliance and risk-monitoring workflow.',
+  },
+}

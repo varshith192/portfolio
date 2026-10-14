@@ -1,24 +1,32 @@
 import { useEffect, useState } from 'react'
 import { nav, profile } from '../data/content.js'
 import { useActiveSection, useScrollProgress } from '../hooks.js'
+import { lockScroll } from '../lib/smooth.js'
 import Brand from './Brand.jsx'
 
-const ids = ['top', ...nav.map((n) => n.id)]
+const ids = nav.map((n) => n.id)
+const openMenu = () => window.dispatchEvent(new Event('cmdk:open'))
 
 export default function Header() {
   const active = useActiveSection(ids)
   const progress = useScrollProgress()
   const [open, setOpen] = useState(false)
   const [solid, setSolid] = useState(false)
-
   const [onDark, setOnDark] = useState(true)
+  const [inHero, setInHero] = useState(true)
+  const [kbd, setKbd] = useState('Ctrl K')
 
   useEffect(() => {
-    // Hero and contact are dark, so the bar switches to light text while over them.
-    const dark = ['top', 'contact'].map((id) => document.getElementById(id))
+    if (/mac|iphone|ipad/i.test(navigator.userAgentData?.platform || navigator.platform || '')) setKbd('⌘K')
+    // The hero is sticky, so "over the hero" means the paper sheet hasn't reached the bar yet.
+    const paper = document.querySelector('.paper')
+    const contact = document.getElementById('contact')
     const onScroll = () => {
+      const paperTop = paper ? paper.getBoundingClientRect().top : 0
+      const c = contact?.getBoundingClientRect()
       setSolid(window.scrollY > 24)
-      setOnDark(dark.some((el) => el && el.getBoundingClientRect().top <= 32 && el.getBoundingClientRect().bottom > 32))
+      setInHero(paperTop > window.innerHeight * 0.35)
+      setOnDark(paperTop > 32 || (c && c.top <= 32 && c.bottom > 32))
     }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -30,17 +38,23 @@ export default function Header() {
   }, [])
 
   useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : ''
+    lockScroll(open)
     if (!open) return
     const onKey = (e) => e.key === 'Escape' && setOpen(false)
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [open])
 
+  const closeMenu = () => {
+    lockScroll(false)
+    setOpen(false)
+  }
+  const current = inHero ? null : active
+
   return (
     <header className={`hdr${solid ? ' is-solid' : ''}${onDark ? ' on-dark' : ''}${open ? ' is-open' : ''}`}>
       <div className="hdr__bar">
-        <a className="hdr__mark" href="#top" onClick={() => setOpen(false)} aria-label="Dara Sai Varshith, back to top">
+        <a className="hdr__mark" href="#top" onClick={closeMenu} aria-label="Dara Sai Varshith, back to top">
           <Brand />
         </a>
 
@@ -49,8 +63,8 @@ export default function Header() {
             <a
               key={n.id}
               href={`#${n.id}`}
-              className={active === n.id ? 'is-active' : undefined}
-              aria-current={active === n.id ? 'true' : undefined}
+              className={current === n.id ? 'is-active' : undefined}
+              aria-current={current === n.id ? 'true' : undefined}
             >
               <span className="hdr__n">{n.n}</span>
               {n.label}
@@ -58,7 +72,16 @@ export default function Header() {
           ))}
         </nav>
 
-        <a className="hdr__cta" href={profile.resume} target="_blank" rel="noopener">
+        <button type="button" className="hdr__ask" onClick={openMenu} aria-label="Open command menu">
+          <svg viewBox="0 0 16 16" aria-hidden="true">
+            <circle cx="7" cy="7" r="4.5" />
+            <path d="m10.5 10.5 3 3" />
+          </svg>
+          <span className="hdr__ask-label">Ask</span>
+          <kbd>{kbd}</kbd>
+        </button>
+
+        <a className="hdr__cta" href={profile.resume} target="_blank" rel="noopener" data-magnetic="0.2">
           Résumé
         </a>
 
@@ -80,7 +103,7 @@ export default function Header() {
         <ol>
           {nav.map((n) => (
             <li key={n.id}>
-              <a href={`#${n.id}`} onClick={() => setOpen(false)}>
+              <a href={`#${n.id}`} onClick={closeMenu}>
                 <span className="mnav__n">{n.n}</span>
                 {n.label}
               </a>

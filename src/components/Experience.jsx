@@ -1,5 +1,6 @@
 import { experience } from '../data/content.js'
 import SectionHead from './SectionHead.jsx'
+import CareerTrace from './CareerTrace.jsx'
 import { ArrowUpRight } from './Icons.jsx'
 
 export default function Experience() {
@@ -10,9 +11,11 @@ export default function Experience() {
           Where I&rsquo;ve <em>shipped</em> so far.
         </SectionHead>
 
+        <CareerTrace />
+
         <ol className="exp__list">
           {experience.map((job) => (
-            <li className="exp__item" key={job.org} data-reveal>
+            <li className="exp__item" key={job.org} id={`exp-${job.id}`} data-reveal>
               <div className="exp__when">
                 <span className="exp__date">{job.date}</span>
               </div>

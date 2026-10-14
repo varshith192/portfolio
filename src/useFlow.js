@@ -11,14 +11,14 @@ import { usePrefersReducedMotion } from './hooks.js'
 const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2)
 const TRAIL = [0, 0.045, 0.09]
 
-export function useFlow(steps, { autoplay = true, maxLog = 4 } = {}) {
+export function useFlow(steps, { autoplay = true, maxLog = 4, startDelay = 0, enabled = true } = {}) {
   const svgRef = useRef(null)
   const reduced = usePrefersReducedMotion()
   const [playing, setPlaying] = useState(false)
   const [visible, setVisible] = useState(false)
   const [log, setLog] = useState([])
   const [stepIndex, setStepIndex] = useState(-1)
-  const run = useRef({ i: 0, phase: 'travel', elapsed: 0, clock: 0, loop: 1 })
+  const run = useRef({ i: 0, phase: 'travel', elapsed: 0, clock: 0, loop: 1, wait: startDelay })
 
   useEffect(() => {
     setPlaying(autoplay && !reduced)
@@ -40,14 +40,14 @@ export function useFlow(steps, { autoplay = true, maxLog = 4 } = {}) {
 
   const reset = useCallback(() => {
     const svg = svgRef.current
-    run.current = { i: 0, phase: 'travel', elapsed: 0, clock: 0, loop: run.current.loop + 1 }
+    run.current = { i: 0, phase: 'travel', elapsed: 0, clock: 0, loop: run.current.loop + 1, wait: 0 }
     clearMarks()
     if (svg) svg.dataset.flag = ''
     setStepIndex(-1)
   }, [clearMarks])
 
   useEffect(() => {
-    if (!playing || !visible) return
+    if (!playing || !visible || !enabled) return
     const svg = svgRef.current
     const packet = svg.querySelector('[data-packet]')
     const dots = packet ? [...packet.children] : []
@@ -68,6 +68,11 @@ export function useFlow(steps, { autoplay = true, maxLog = 4 } = {}) {
     const tick = (now) => {
       const dt = Math.min(64, now - last)
       last = now
+      if (s.wait > 0) {
+        s.wait -= dt
+        raf = requestAnimationFrame(tick)
+        return
+      }
       s.elapsed += dt
       s.clock += dt
       const step = steps[s.i]
@@ -113,7 +118,7 @@ export function useFlow(steps, { autoplay = true, maxLog = 4 } = {}) {
 
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [playing, visible, steps, reduced, maxLog])
+  }, [playing, visible, enabled, steps, reduced, maxLog])
 
   const toggle = useCallback(() => setPlaying((p) => !p), [])
   const replay = useCallback(() => {

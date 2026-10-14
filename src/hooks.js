@@ -80,3 +80,82 @@ export function useScrollProgress() {
   }, [])
   return p
 }
+
+const finePointer = () => window.matchMedia('(hover: hover) and (pointer: fine)').matches
+const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+// Writes the pointer position into --mx / --my (px, relative to the element)
+// and --px / --py (-1..1, for parallax). --spot is 1 while hovered.
+export function usePointerVars(ref) {
+  useEffect(() => {
+    const el = ref.current
+    if (!el || !finePointer()) return
+    let raf = 0
+    let x = 0
+    let y = 0
+    let w = 1
+    let h = 1
+    const flush = () => {
+      raf = 0
+      el.style.setProperty('--mx', `${x}px`)
+      el.style.setProperty('--my', `${y}px`)
+      el.style.setProperty('--px', ((x / w) * 2 - 1).toFixed(3))
+      el.style.setProperty('--py', ((y / h) * 2 - 1).toFixed(3))
+    }
+    const move = (e) => {
+      const r = el.getBoundingClientRect()
+      x = e.clientX - r.left
+      y = e.clientY - r.top
+      w = r.width || 1
+      h = r.height || 1
+      if (!raf) raf = requestAnimationFrame(flush)
+    }
+    const enter = () => el.style.setProperty('--spot', '1')
+    const leave = () => {
+      el.style.setProperty('--spot', '0')
+      el.style.setProperty('--px', '0')
+      el.style.setProperty('--py', '0')
+    }
+    el.addEventListener('pointermove', move)
+    el.addEventListener('pointerenter', enter)
+    el.addEventListener('pointerleave', leave)
+    return () => {
+      cancelAnimationFrame(raf)
+      el.removeEventListener('pointermove', move)
+      el.removeEventListener('pointerenter', enter)
+      el.removeEventListener('pointerleave', leave)
+    }
+  }, [ref])
+}
+
+// Elements with [data-magnetic] lean toward the pointer while hovered.
+export function useMagnetics() {
+  useEffect(() => {
+    if (!finePointer() || reducedMotion()) return
+    const cleanups = [...document.querySelectorAll('[data-magnetic]')].map((el) => {
+      const strength = parseFloat(el.dataset.magnetic) || 0.25
+      let raf = 0
+      const move = (e) => {
+        const r = el.getBoundingClientRect()
+        const dx = e.clientX - (r.left + r.width / 2)
+        const dy = e.clientY - (r.top + r.height / 2)
+        cancelAnimationFrame(raf)
+        raf = requestAnimationFrame(() => {
+          el.style.transform = `translate(${(dx * strength).toFixed(1)}px, ${(dy * strength).toFixed(1)}px)`
+        })
+      }
+      const leave = () => {
+        cancelAnimationFrame(raf)
+        el.style.transform = ''
+      }
+      el.addEventListener('pointermove', move)
+      el.addEventListener('pointerleave', leave)
+      return () => {
+        cancelAnimationFrame(raf)
+        el.removeEventListener('pointermove', move)
+        el.removeEventListener('pointerleave', leave)
+      }
+    })
+    return () => cleanups.forEach((c) => c())
+  }, [])
+}

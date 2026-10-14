@@ -1,5 +1,7 @@
-import { projects } from '../data/content.js'
+import { useRef, useState } from 'react'
+import { diagramTips, projects } from '../data/content.js'
 import SectionHead from './SectionHead.jsx'
+import SplitText from './SplitText.jsx'
 import { ArrowUpRight, GitHubIcon } from './Icons.jsx'
 import { ItOpsDiagram, StelosDiagram, AstraGovDiagram, itopsSteps, stelosSteps, astraSteps } from './Diagrams.jsx'
 import FlowConsole from './FlowConsole.jsx'
@@ -14,24 +16,44 @@ const diagrams = {
 function Figure({ project }) {
   const [Diagram, steps] = diagrams[project.diagram]
   const flow = useFlow(steps)
+  const frameRef = useRef(null)
+  const [tip, setTip] = useState(null)
+  const tips = diagramTips[project.diagram]
+
+  // Inspect mode: hovering a component shows what it does.
+  const onOver = (e) => {
+    const node = e.target.closest?.('[data-node]')
+    const text = node && tips[node.dataset.node]
+    if (!text || !window.matchMedia('(hover: hover)').matches) return setTip(null)
+    const f = frameRef.current.getBoundingClientRect()
+    const r = node.getBoundingClientRect()
+    const below = r.top - f.top < 90
+    setTip({ text, below, x: r.left - f.left + r.width / 2, y: below ? r.bottom - f.top : r.top - f.top, id: node.dataset.node })
+  }
+
   return (
     <figure className="fig" data-reveal>
-      <div className="fig__frame">
+      <div className="fig__frame" ref={frameRef} onPointerOver={onOver} onPointerLeave={() => setTip(null)}>
         <span className="fig__corner fig__corner--tl" aria-hidden="true" />
         <span className="fig__corner fig__corner--br" aria-hidden="true" />
         <div className="fig__scroll">
           <Diagram svgRef={flow.svgRef} />
         </div>
         <FlowConsole flow={flow} />
+        {tip && (
+          <div className={`fig__tip${tip.below ? ' is-below' : ''}`} style={{ left: tip.x, top: tip.y }} role="tooltip" key={tip.id}>
+            {tip.text}
+          </div>
+        )}
       </div>
       <p className="fig__hint" aria-hidden="true">
         Swipe to see the full diagram →
       </p>
       <figcaption className="fig__cap">
         <span>Fig. {project.index}</span>
-        Conceptual architecture with a simulated run, simplified for illustration. Components are named from the
-        project description; the trace shows the intended flow, not recorded output. See the repository for the
-        implementation.
+        Conceptual architecture with a simulated run, simplified for illustration. Hover a component to inspect it.
+        Components are named from the project description; the trace shows the intended flow, not recorded output.
+        See the repository for the implementation.
       </figcaption>
     </figure>
   )
@@ -84,13 +106,13 @@ function Meta({ project }) {
 function Case({ project, layout }) {
   const titleId = `case-${project.id}`
   return (
-    <article className={`case case--${layout}`} aria-labelledby={titleId}>
-      <header className="case__head" data-reveal>
+    <article className={`case case--${layout}`} id={`project-${project.id}`} aria-labelledby={titleId}>
+      <header className="case__head" data-reveal="split">
         <span className="case__index" aria-hidden="true">
           {project.index}
         </span>
         <h3 className="case__title" id={titleId}>
-          {project.title}
+          <SplitText>{project.title}</SplitText>
           {project.subtitle && <em className="case__subtitle">{project.subtitle}</em>}
         </h3>
         <Meta project={project} />
